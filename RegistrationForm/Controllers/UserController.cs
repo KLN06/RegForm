@@ -36,7 +36,7 @@ namespace RegistrationForm.Controllers
 
                 if (user != null)
                 {
-                    var result = await signInManager.PasswordSignInAsync(user.Name, model.Password, false, lockoutOnFailure: false);
+                    var result = await signInManager.PasswordSignInAsync(user.UserName, model.Password, false, lockoutOnFailure: false);
 
                     if (result.Succeeded)
                     {
@@ -44,17 +44,18 @@ namespace RegistrationForm.Controllers
                     }
                     else
                     {
-                        throw new ArgumentException("Credentials");
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     }
                 }
                 else
                 {
-                    throw new ArgumentException("Email");
+                    ModelState.AddModelError(string.Empty, "Invalid email.");
                 }
             }
 
             return View(model);
         }
+
 
         [HttpGet]
         public IActionResult Register()
