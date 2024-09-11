@@ -274,9 +274,11 @@
     </div>
 
     <div>
-        <label asp-for="Gender"></label>
-        <input type="radio" asp-for="Gender" value="Male" /> Male
-        <input type="radio" asp-for="Gender" value="Female" /> Female
+        <label asp-for="Gender">Gender</label>
+        <select asp-for="Gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
         <span asp-validation-for="Gender"></span>
     </div>
 
