@@ -36,7 +36,7 @@ namespace RegistrationForm.Controllers
 
                 if (user != null)
                 {
-                    var result = await signInManager.PasswordSignInAsync(user.Name, model.Password, model.RememberMe, lockoutOnFailure: false);
+                    var result = await signInManager.PasswordSignInAsync(user.Name, model.Password, false, lockoutOnFailure: false);
 
                     if (result.Succeeded)
                     {
@@ -94,6 +94,66 @@ namespace RegistrationForm.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
+            var model = new EditViewModel
+            {
+                Name = user.Name
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if(model.Name != null)
+            {
+                user.Name = model.Name;
+                user.UserName = model.Name;
+            }
+
+            if (model.NewPassword != null && model.ConfirmPassword != null) 
+            {
+                var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.ConfirmPassword);
+                    if (!result.Succeeded)
+                    {
+                        return View(model);
+                    }
+                
+            }
+
+            var updateResult = await userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                return View(model);
+            }
+            else
+            {
+                await signInManager.RefreshSignInAsync(user); // refresh the autentication cookie so that the changes i have made are applied.
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+            
+        }
 
 
         [HttpPost]

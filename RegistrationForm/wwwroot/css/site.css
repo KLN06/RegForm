@@ -1,22 +1,48 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrollbars if needed */
+}
+
+/* Remove or comment out the wave effect styles */
+#wave-container {
+    /* Remove or comment out these styles */
+    /* position: absolute;
+  top: 300px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between; */
+}
+
+.box {
+    /* Remove or comment out these styles */
+    /* flex: 1;
+  background-color: gray;
+  transition: background-color 0.5s ease-in-out;
+  height: 20%; */
+}
+
+#wave-container:hover #box1,
+#wave-container:hover #box2,
+#wave-container:hover #box3,
+#wave-container:hover #box4,
+#wave-container:hover #box5 {
+    /* Remove or comment out these styles */
+    /* background-color: white; */
 }

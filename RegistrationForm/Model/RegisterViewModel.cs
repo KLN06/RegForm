@@ -4,7 +4,11 @@ namespace RegistrationForm.Model
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Please write your email.")]
+        [Required]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Name must contain only letters.")]
+        public string Name { get; set; }
+
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
 
@@ -14,18 +18,16 @@ namespace RegistrationForm.Model
 
         [Required]
         [DataType(DataType.Password)]
-        
+        [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; }
-
-
-        [Required]
-        public string Name { get; set; }
 
         [Required]
         public string IsoCode { get; set; }
 
         [Required]
         [Phone]
+        [StringLength(15, ErrorMessage ="Phone number can not be longer than 15 digits")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must only contain digits.")]
         public string Telephone { get; set; }
 
         public string? Gender { get; set; }
