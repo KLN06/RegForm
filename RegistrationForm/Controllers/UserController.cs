@@ -38,9 +38,7 @@ namespace RegistrationForm.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Correctly await the FindByEmailAsync call to get the actual user
                 var user = await userManager.FindByEmailAsync(model.Email);
-
 
                 if (user != null)
                 {
@@ -48,7 +46,6 @@ namespace RegistrationForm.Controllers
 
                     if (result.Succeeded)
                     {
-                        // If the sign-in was successful, redirect to home or any other page
                         return RedirectToAction(nameof(HomeController.Index), "Home");
                     }
                     else
@@ -62,7 +59,6 @@ namespace RegistrationForm.Controllers
                 }
             }
 
-            throw new ArgumentException("Invalid");
             return View(model);
         }
 
@@ -72,7 +68,6 @@ namespace RegistrationForm.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Log the ModelState errors or check in debugger
                 return View(model);
             }
 

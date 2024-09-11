@@ -13,7 +13,7 @@ namespace RegistrationForm.Model
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public bool RememberMe { get; set; }  // Optional for "Remember Me" functionality
+        public bool RememberMe { get; set; }
     }
 
 }
