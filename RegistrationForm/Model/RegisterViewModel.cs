@@ -14,6 +14,7 @@ namespace RegistrationForm.Model
 
         [Required]
         [DataType(DataType.Password)]
+        
         public string ConfirmPassword { get; set; }
 
         [Required]

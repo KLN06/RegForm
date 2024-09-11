@@ -90,11 +90,6 @@ namespace RegistrationForm.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
             return View(model);
         }
 
