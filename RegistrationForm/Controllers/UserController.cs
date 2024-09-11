@@ -22,12 +22,6 @@ namespace RegistrationForm.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -62,10 +56,17 @@ namespace RegistrationForm.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult Register()
+        {
+            ModelState.Clear();
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 return View(model);

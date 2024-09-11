@@ -4,7 +4,7 @@ namespace RegistrationForm.Model
 {
     public class RegisterViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Please write your email.")]
         [EmailAddress]
         public string Email { get; set; }
 
@@ -16,6 +16,7 @@ namespace RegistrationForm.Model
         [DataType(DataType.Password)]
         
         public string ConfirmPassword { get; set; }
+
 
         [Required]
         public string Name { get; set; }

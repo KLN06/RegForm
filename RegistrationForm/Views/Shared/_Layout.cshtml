@@ -19,24 +19,26 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                            <form asp-controller="Home" asp-action="Index" method="post">
-                                <button asp-controller="Home" asp-action="Index" method="post" type="submit" class="nav-link text-dark">Home</button>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Log in</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-controller="User" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="nav-link text-dark bg-transparent border-0">Log out</button>
                             </form>
-                            <form asp-controller="User" asp-action="Login" method="post">
-                                <button asp-controller="User" asp-action="Login" method="post" type="submit" class="nav-link text-dark">Log in</button>
-                            </form>
-                            <form asp-controller="User" asp-action="Register" method="post">
-                                <button asp-controller="User" asp-action="Register" method="post" type="submit" class="nav-link text-dark">Register</button>
-                            </form>
-                            <form asp-controller="User" asp-action="Logout" method="post">
-                                <button asp-controller="User" asp-action="Logout" method="post" type="submit" class="nav-link text-dark">Log out</button>
-                            </form>
-
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
