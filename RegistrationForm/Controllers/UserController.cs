@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg;
 using RegistrationForm.Data;
+using RegistrationForm.Helpers;
 using RegistrationForm.Model;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace RegistrationForm.Controllers
@@ -13,6 +17,7 @@ namespace RegistrationForm.Controllers
 
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+
 
         public UserController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext dbContext)
         {
@@ -65,8 +70,15 @@ namespace RegistrationForm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model, string CaptchaInput)
         {
+
+            string sessionCaptcha = HttpContext.Session.GetString("CaptchaCode");
+            if (CaptchaInput != sessionCaptcha)
+            {
+                return View(model);
+            }
+
 
             if (!ModelState.IsValid)
             {
@@ -88,7 +100,7 @@ namespace RegistrationForm.Controllers
             if (existingUser != null)
             {
                 ModelState.AddModelError("Email", "This email is already registered.");
-                return View(model); // Return the view with the error message
+                return View(model); 
             }
 
             var result = await userManager.CreateAsync(user, model.Password);
@@ -101,10 +113,11 @@ namespace RegistrationForm.Controllers
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
             }
-            
 
             return View(model);
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Edit()
@@ -173,6 +186,15 @@ namespace RegistrationForm.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
+        [HttpGet]
+        public IActionResult GetCaptcha()
+        {
+            string captchaText = CaptchaHelper.GenerateCaptchaText(6);
+            HttpContext.Session.SetString("CaptchaCode", captchaText);
+            byte[] captchaImage = CaptchaHelper.GenerateCaptchaImage(captchaText);
+            return File(captchaImage, "image/png");
         }
     }
 

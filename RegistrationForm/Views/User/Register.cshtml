@@ -289,6 +289,13 @@
         <span asp-validation-for="Address"></span>
     </div>
 
+    <div>
+        <label for="captcha">Enter the CAPTCHA:</label>
+        <img src="@Url.Action("GetCaptcha", "User")" alt="CAPTCHA" />
+        <input type="text" id="captcha" name="CaptchaInput" required />
+        <span validation-for="captcha"></span>
+    </div>
+
     <button type="submit">Register</button>
 </form>
 
