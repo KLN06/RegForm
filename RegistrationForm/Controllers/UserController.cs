@@ -75,7 +75,7 @@ namespace RegistrationForm.Controllers
 
             var user = new User
             {
-                UserName = model.Name,
+                UserName = model.Email,
                 Email = model.Email,
                 Name = model.Name,
                 IsoCode = model.IsoCode,
@@ -86,11 +86,15 @@ namespace RegistrationForm.Controllers
 
             var result = await userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
+            if(result != null)
             {
-                await signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
             }
+            
 
             return View(model);
         }

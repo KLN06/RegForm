@@ -10,21 +10,22 @@ using Microsoft.AspNetCore.Http;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 
 namespace RegistrationForm.Tests
 {
     [TestFixture]
     public class UserControllerTests
     {
-        private Mock<UserManager<User>> userManagerMock;
+        private Mock<Microsoft.AspNetCore.Identity.UserManager<User>> userManagerMock;
         private Mock<SignInManager<User>> signInManagerMock;
         private UserController userController;
 
         [SetUp]
         public void Setup()
         {
-            userManagerMock = new Mock<UserManager<User>>(
-                Mock.Of<IUserStore<User>>(),
+            userManagerMock = new Mock<Microsoft.AspNetCore.Identity.UserManager<User>>(
+                Mock.Of<Microsoft.AspNetCore.Identity.IUserStore<User>>(),
                 null,
                 null,
                 null,
@@ -44,6 +45,10 @@ namespace RegistrationForm.Tests
                 null);
 
             userController = new UserController(userManagerMock.Object, signInManagerMock.Object, null);
+        }
+        [TearDown] public void TearDown()
+        {
+            userController.Dispose();
         }
 
         [Test]
@@ -66,7 +71,7 @@ namespace RegistrationForm.Tests
                 Password = "password"
             };
 
-            var user = new User { UserName = model.Email };
+            var user = new User { Email = model.Email };
             userManagerMock.Setup(um => um.FindByEmailAsync(model.Email)).ReturnsAsync(user);
             signInManagerMock.Setup(sm => sm.PasswordSignInAsync(user.UserName, model.Password, false, false))
                              .ReturnsAsync(SignInResult.Success);
@@ -102,6 +107,43 @@ namespace RegistrationForm.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task Register_Post_ValidModel_RedirectsToHome()
+        {
+            // Arrange
+            var model = new RegisterViewModel
+            {
+                Name = "Test",
+                Email = "test@example.com",
+                Password = "#Password123",
+                ConfirmPassword = "#Password123",
+                IsoCode="+359",
+                Telephone="889534450"
+            };
+
+            var user = new User
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                Name = model.Name,
+                IsoCode = model.IsoCode,
+                Telephone = model.Telephone
+            };
+
+            userManagerMock.Setup(um => um.CreateAsync(It.Is<User>(u => u.Email == model.Email), model.Password))
+                .ReturnsAsync(Microsoft.AspNetCore.Identity.IdentityResult.Success);
+
+
+            signInManagerMock.Setup(sm => sm.PasswordSignInAsync(user.UserName, model.Password, false, false))
+                             .ReturnsAsync(SignInResult.Success);
+
+            var result = await userController.Register(model) as RedirectToActionResult;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.ActionName, Is.EqualTo("Index"));
+            Assert.That(result.ControllerName, Is.EqualTo("Home"));
         }
 
         [Test]
