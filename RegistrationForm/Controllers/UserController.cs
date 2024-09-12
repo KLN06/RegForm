@@ -44,12 +44,12 @@ namespace RegistrationForm.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        throw new ArgumentException("Invalid login attempt");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid email.");
+                    ModelState.AddModelError("Email", "Email not registered yet.");
                 }
             }
 
@@ -83,6 +83,13 @@ namespace RegistrationForm.Controllers
                 Gender = model.Gender,
                 Address = model.Address
             };
+
+            var existingUser = await userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Email", "This email is already registered.");
+                return View(model); // Return the view with the error message
+            }
 
             var result = await userManager.CreateAsync(user, model.Password);
 
@@ -128,7 +135,7 @@ namespace RegistrationForm.Controllers
             var user = await userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound();
+                throw new ArgumentException("User not found. Make sure you are registered/logged in.");
             }
 
             if(model.Name != null)
