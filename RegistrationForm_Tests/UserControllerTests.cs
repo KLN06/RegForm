@@ -128,8 +128,8 @@ namespace RegistrationForm.Tests
                 Email = "test@example.com",
                 Password = "#Password123",
                 ConfirmPassword = "#Password123",
-                IsoCode="+359",
-                Telephone="889534450"
+                IsoCode = "+359",
+                Telephone = "889534450"
             };
 
             var user = new User
@@ -144,11 +144,12 @@ namespace RegistrationForm.Tests
             userManagerMock.Setup(um => um.CreateAsync(It.Is<User>(u => u.Email == model.Email), model.Password))
                 .ReturnsAsync(Microsoft.AspNetCore.Identity.IdentityResult.Success);
 
-
             signInManagerMock.Setup(sm => sm.PasswordSignInAsync(user.UserName, model.Password, false, false))
                              .ReturnsAsync(SignInResult.Success);
 
-            var result = await userController.Register(model) as RedirectToActionResult;
+            string captchaInput = "valid-captcha-response";
+
+            var result = await userController.Register(model, captchaInput) as RedirectToActionResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.ActionName, Is.EqualTo("Index"));
@@ -161,7 +162,8 @@ namespace RegistrationForm.Tests
             userController.ModelState.AddModelError("error", "error");
             var model = new RegisterViewModel();
 
-            var result = await userController.Register(model) as ViewResult;
+            string captchaInput = "valid-captcha-response";
+            var result = await userController.Register(model, captchaInput) as ViewResult;
 
             Assert.That(result, Is.Not.Null);
         }
@@ -181,7 +183,8 @@ namespace RegistrationForm.Tests
 
             userController.ModelState.AddModelError("Email", "Email is required");
 
-            var result = await userController.Register(model) as ViewResult;
+            string captchaInput = "valid-captcha-response";
+            var result = await userController.Register(model, captchaInput) as ViewResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.ViewName, Is.Null);
@@ -212,7 +215,8 @@ namespace RegistrationForm.Tests
             signInManagerMock.Setup(sm => sm.SignInAsync(It.IsAny<User>(), It.IsAny<bool>(), null))
                 .Returns(Task.CompletedTask);
 
-            var result = await userController.Register(model) as ViewResult;
+            string captchaInput = "valid-captcha-response";
+            var result = await userController.Register(model, captchaInput) as ViewResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.ViewName, Is.Null.Or.Empty);
